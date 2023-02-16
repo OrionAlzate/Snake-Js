@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>
-    <link rel="shortcut icon" href="https://img.freepik.com/vector-premium/pixel-8-bits-serpiente-pixel-animal-activos-juego-patrones-punto-cruz-ilustraciones-vectoriales_614713-843.jpg" />
+    <link rel="shortcut icon"
+        href="https://img.freepik.com/vector-premium/pixel-8-bits-serpiente-pixel-animal-activos-juego-patrones-punto-cruz-ilustraciones-vectoriales_614713-843.jpg" />
     <style>
         body {
             display: flex;
@@ -65,8 +66,8 @@
             background("black");
             serpiente.dibujar();
             fill("red");
-            rect(comida.x*LADO, comida.y * LADO, LADO, LADO)
-            if(serpiente.posicion.dist(comida)==0){
+            rect(comida.x * LADO, comida.y * LADO, LADO, LADO)
+            if (serpiente.posicion.dist(comida) == 0) {
                 serpiente.tamaño++
                 posicionarComida()
             }
@@ -79,24 +80,39 @@
             }
             switch (keyCode) {
                 case UP_ARROW:
-                    serpiente.aceleracion = arriba;
-                    break;
+                    if (serpiente.cola.lenght && serpiente.aceleracion == abajo) {
+                        break
+                    } else {
+                        serpiente.aceleracion = arriba;
+                        break;
+                    }
                 case RIGHT_ARROW:
-                    serpiente.aceleracion = derecha;
-                    break;
+                    if (serpiente.cola.lenght && serpiente.aceleracion == izquierda) {
+                        break
+                    } else {
+                        serpiente.aceleracion = derecha;
+                        break;
+                    }
                 case DOWN_ARROW:
-                    serpiente.aceleracion = abajo;
-                    break;
+                    if (serpiente.cola.lenght && serpiente.aceleracion == arriba) {
+                        break
+                    } else {
+                        serpiente.aceleracion = abajo;
+                        break;
+                    }
                 case LEFT_ARROW:
-                    serpiente.aceleracion = izquierda;
-                    break;
+                    if (serpiente.cola.lenght && serpiente.aceleracion == derecha) {
+                        break
+                    } else {
+                        serpiente.aceleracion = izquierda;
+                        break;
+                    }
                 default:
-
                     break;
             }
         }
 
-        function posicionarComida(){
+        function posicionarComida() {
             comida = createVector(
                 int(random(COLUMNAS)),
                 int(random(FILAS))
@@ -134,30 +150,38 @@
                 if (this.posicion.x >= COLUMNAS || this.posicion.y >= FILAS) {
                     return true
                 }
+                // chocar con la cola
+                for (const c of this.cola) {
+                    if (this.posicion.equals(c)) {
+                        return true
+                    }
+                }
+
+
                 return false
             }
             this.dibujar = function () {
                 fill("white")
                 rect(
-                    constrain(this.posicion.x, 0, COLUMNAS -1) * LADO,
-                    constrain(this.posicion.y, 0, FILAS -1) * LADO,
+                    constrain(this.posicion.x, 0, COLUMNAS - 1) * LADO,
+                    constrain(this.posicion.y, 0, FILAS - 1) * LADO,
                     LADO,
                     LADO
                 )
 
                 for (const c of this.cola) {
                     rect(
-                    constrain(c.x, 0, COLUMNAS -1) * LADO,
-                    constrain(c.y, 0, FILAS -1) * LADO,
-                    LADO,
-                    LADO
-                )
+                        constrain(c.x, 0, COLUMNAS - 1) * LADO,
+                        constrain(c.y, 0, FILAS - 1) * LADO,
+                        LADO,
+                        LADO
+                    )
                 }
 
                 juegoTerminado()
                 this.cola.push(this.posicion.copy())
-                if (this.cola.length > this.tamaño){
-                    this.cola.splice(0,1)
+                if (this.cola.length > this.tamaño) {
+                    this.cola.splice(0, 1)
                 }
                 this.posicion.add(this.aceleracion)
             }
